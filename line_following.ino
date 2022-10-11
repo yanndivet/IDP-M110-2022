@@ -10,6 +10,8 @@ Adafruit_DCMotor *myMotor_left = AFMS.getMotor(2);
 
 
 void setup() {
+  pinMode(LS, INPUT);
+  pinMode(RS, INPUT);
   int right_counter = 0;
   Serial.begin(9600);           // set up Serial library at 9600 bps
   Serial.println("Adafruit Motorshield v2 - DC Motor test!");

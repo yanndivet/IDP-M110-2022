@@ -59,10 +59,5 @@ else if(digitalRead(LS) && !(digitalRead(RS))){
     myMotor_left->run(FORWARD);
   }  
 
-// Turn left
-else if(digitalRead(LS) && !(digitalRead(RS))){ 
-    myMotor_right->run(RELEASE);
-    myMotor_left->run(FORWARD);
-  } 
 
 }

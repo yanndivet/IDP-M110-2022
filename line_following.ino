@@ -19,17 +19,18 @@ void setup() {
   Serial.println("Motor Shield found.");
 
   // Set the speed to start, from 0 (off) to 255 (max speed)
-  myMotor->setSpeed(200);
+  myMotor_right->setSpeed(200);
+  myMotor_left->setSpeed(200);
   // turn on motor
-  myMotor->run(RELEASE);
+  myMotor_right->run(RELEASE);
+  myMotor_left->run(RELEASE);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 
 
-  myMotor_right->run(FORWARD);
-  myMotor_left->run(FORWARD);
+
 if(digitalRead(LS) && digitalRead(RS))     // Move Forward
 
   {

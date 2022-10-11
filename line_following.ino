@@ -30,47 +30,24 @@ void loop() {
   // put your main code here, to run repeatedly:
 
 
-
-if(digitalRead(LS) && digitalRead(RS))     // Move Forward
-
-  {
-
-    
+// Move Forward
+if(!(digitalRead(LS)) && !(digitalRead(RS))) {  
     myMotor_right->run(FORWARD);
     myMotor_left->run(FORWARD);
+  } 
 
-  }
 
-  
-
-  if(!(digitalRead(LS)) && digitalRead(RS))     // Turn right
-
-  {
-
+// Turn right
+else if(!(digitalRead(LS)) && digitalRead(RS)){ 
     myMotor_right->run(RELEASE);
     myMotor_left->run(FORWARD);
-
   }
 
-  
 
-  if(digitalRead(LS) && !(digitalRead(RS)))     // turn left
-
-  {
-
-    myMotor_right->run(FORWARD);
-    myMotor_left->run(RELEASE);
-
-  }
-
-  
-
-  if(!(digitalRead(LS)) && !(digitalRead(RS)))     // move forward
-
-  {
-
-    myMotor_right->run(FORWARD);
+// Turn left
+else if(digitalRead(LS) && !(digitalRead(RS))){ 
+    myMotor_right->run(RELEASE);
     myMotor_left->run(FORWARD);
+  }  
 
-  }
 }

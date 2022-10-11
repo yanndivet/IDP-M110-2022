@@ -47,7 +47,7 @@ if(digitalRead(LS) && digitalRead(RS))     // Move Forward
 
   {
 
-    myMotor_right->run(Release);
+    myMotor_right->run(RELEASE);
     myMotor_left->run(FORWARD);
 
   }

@@ -1,12 +1,15 @@
 #include <Adafruit_MotorShield.h>
 #define LS A2      // left sensor
-
 #define RS A1      // right sensor
+#define LLS A3      // most left sensor
+#define RRS A4      // most right sensor
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *myMotor_right = AFMS.getMotor(1);
 Adafruit_DCMotor *myMotor_left = AFMS.getMotor(3);
 
 int threshold = 100;
+int right_counter = 0;
+bool initial = true;
 
 void setup() {
   pinMode(LS, INPUT);
@@ -35,34 +38,34 @@ void loop() {
   // put your main code here, to run repeatedly:
 
 
-  if((analogRead(LS) < threshold) && (analogRead(RS) < threshold))     // move forward
-
-  {
-
+// Move forward
+  if((analogRead(LS) < threshold) && (analogRead(RS) < threshold)) {
     myMotor_right->run(FORWARD);
     myMotor_left->run(BACKWARD);
 
+    // Check if this is the initial movement
+    if ((initial == true) && (analogRead(LLS) < threshold) && (analogRead(RRS) < threshold)) {
+      right_counter++;
+      // Turn right at second intersection
+      if (right_counter == 2) {
+        // Turn right using both wheels to be quicker
+        myMotor_right->run(FORWARD);
+        myMotor_left->run(BACKWARD);
+        delay (1000); // wait a little bit to turn. Might need to change time empirically.
+        initial = false;
+        }
+      }
   }
 
-  else if((analogRead(LS) < threshold) && (analogRead(RS) > threshold))     // Turn left
-
-  {
-
+// Turn left 
+  else if((analogRead(LS) < threshold) && (analogRead(RS) > threshold)) {
     myMotor_right->run(FORWARD);
     myMotor_left->run(RELEASE);
-
-
   }
 
-  
-
-  else if((analogRead(LS) > threshold) && (analogRead(RS) < threshold))     // turn right
-
-  {
-
+// Turn right
+  else if((analogRead(LS) > threshold) && (analogRead(RS) < threshold)) {
     myMotor_right->run(RELEASE);
     myMotor_left->run(BACKWARD);
-
   }
-
 }

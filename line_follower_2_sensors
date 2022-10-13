@@ -1,15 +1,17 @@
 #include <Adafruit_MotorShield.h>
-#define LS 2      // left sensor
+#define LS A2      // left sensor
 
-#define RS 3      // right sensor
+#define RS A1      // right sensor
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *myMotor_right = AFMS.getMotor(1);
-Adafruit_DCMotor *myMotor_left = AFMS.getMotor(2);
+Adafruit_DCMotor *myMotor_left = AFMS.getMotor(3);
 
+int threshold = 100;
 
 void setup() {
   pinMode(LS, INPUT);
   pinMode(RS, INPUT);
+
   
   Serial.begin(9600);           // set up Serial library at 9600 bps
   Serial.println("Adafruit Motorshield v2 - DC Motor");
@@ -22,8 +24,8 @@ void setup() {
   Serial.println("Motor Shield found.");
 
   // Set the speed to start, from 0 (off) to 255 (max speed)
-  myMotor_right->setSpeed(200);
-  myMotor_left->setSpeed(200);
+  myMotor_right->setSpeed(150);
+  myMotor_left->setSpeed(150);
   // turn on motor
   myMotor_right->run(RELEASE);
   myMotor_left->run(RELEASE);
@@ -32,7 +34,17 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-  if(!(digitalRead(LS)) && digitalRead(RS))     // Turn left
+
+  if((analogRead(LS) < threshold) && (analogRead(RS) < threshold))     // move forward
+
+  {
+
+    myMotor_right->run(FORWARD);
+    myMotor_left->run(BACKWARD);
+
+  }
+
+  else if((analogRead(LS) < threshold) && (analogRead(RS) > threshold))     // Turn left
 
   {
 
@@ -44,21 +56,13 @@ void loop() {
 
   
 
-  if(digitalRead(LS) && !(digitalRead(RS)))     // turn right
+  else if((analogRead(LS) > threshold) && (analogRead(RS) < threshold))     // turn right
 
   {
 
     myMotor_right->run(RELEASE);
-    myMotor_left->run(FORWARD);
+    myMotor_left->run(BACKWARD);
 
   }
 
-  if(!(digitalRead(LS)) && !(digitalRead(RS)))     // move forward
-
-  {
-
-    myMotor_right->run(FORWARD);
-    myMotor_left->run(FORWARD);
-
-  }
 }

@@ -48,7 +48,7 @@ void loop() {
     myMotor_left->run(BACKWARD);
 
     // Checks if most right sensor is over white. Could also include most left sensor to make sure, but not necessary
-    if ((analogRead(RRS) > threshold)) {
+    if ((analogRead(RS) > threshold)) {
       right_counter++;
       // Turn right at second intersection
       if (right_counter == 2) {

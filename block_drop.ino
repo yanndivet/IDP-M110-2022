@@ -1,21 +1,30 @@
 // code turn left/right + move forward/backward functions
 
 bool magnetic = true;
+int counter_threshold = 0;
 
-void turn_left(angle) {
-  
+void turn_left(angle=0) {
+//   myMotor_right->run(FORWARD);
+//   myMotor_left->run(RELEASE); 
+   delay(angle);
   }
 
-void turn_right(angle) {
-  
+void turn_right(angle=0) {
+//   myMotor_right->run(BACKWARD);
+//   myMotor_left->run(BACKWARD);
+   delay(angle);
   }
 
-void move_forward(distance) {
-  
+void move_forward(distance=0) {
+//   myMotor_right->run(FORWARD);
+//   myMotor_left->run(BACKWARD);
+   delay(distance);
   }
 
-void move_backward(distance) {
-  
+void move_backward(distance=0) {
+//   myMotor_right->run(BACKWARD);
+//   myMotor_left->run(FORWARD);
+   delay(distance);
   }
 
 void block_drop {
@@ -39,14 +48,12 @@ void block_drop {
   // if dropped in red region, move in front of green region to start next mission
   // perhaps don't always run this, especially at the end? 
   if (magnetic = true) {
-    move_straight(200);
+    move_forward(200);
     }
 
-  
-
-
   // if block isn't magnetic, drop it in green region
-
-  
+  else {
+    move_backward(200);
+    }
 
 }

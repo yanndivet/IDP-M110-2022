@@ -1,18 +1,24 @@
 // code turn left/right + move forward/backward functions
 
+using namespace std;
+
 bool magnetic = true;
 int counter_threshold = 0;
+double angle = 0.0;
+double distance = 0.0;
 
-void turn_left(angle=0) {
+String turn_left(angle=0) {
 //   myMotor_right->run(FORWARD);
 //   myMotor_left->run(RELEASE); 
    delay(angle);
+   return ("Turned left by", angle);
   }
 
-void turn_right(angle=0) {
+String turn_right(angle=0) {
 //   myMotor_right->run(BACKWARD);
 //   myMotor_left->run(BACKWARD);
    delay(angle);
+   return ("Turned right by", angle);
   }
 
 void move_forward(distance=0) {
@@ -27,15 +33,15 @@ void move_backward(distance=0) {
    delay(distance);
   }
 
-void block_drop {
+void block_drop() {
   // if block is magnetic, drop it in red region
 
   if (magnetic == true) {
-    counter_threshold = 4
+    counter_threshold = 4;
     }
 
   else {
-    counter_threshold = 6
+    counter_threshold = 6;
     }
 
   if (right_counter >= counter_threshold) {

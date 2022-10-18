@@ -1,14 +1,15 @@
 #include <Adafruit_MotorShield.h>
-#define LS A2      // left sensor
-#define RS A1      // right sensor
-#define LLS A3      // most left sensor
-#define RRS A4      // most right sensor
+#define LS 2      // left sensor
+#define RS 3      // right sensor
+#define LLS 1      // most left sensor
+#define RRS 4      // most right sensor
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *myMotor_right = AFMS.getMotor(1);
-Adafruit_DCMotor *myMotor_left = AFMS.getMotor(3); // warning this motor is reversed
+Adafruit_DCMotor *myMotor_right = AFMS.getMotor(2);
+Adafruit_DCMotor *myMotor_left = AFMS.getMotor(1); // warning this motor is reversed
 
 int threshold = 100;
-int right_counter = 0;
+int change_counter_LLS = 0;
+int color_LLS = 1;
 
 void setup() {
   pinMode(LS, INPUT);
@@ -28,8 +29,8 @@ void setup() {
   Serial.println("Motor Shield found.");
 
   // Set the speed to start, from 0 (off) to 255 (max speed)
-  myMotor_right->setSpeed(150);
-  myMotor_left->setSpeed(150);
+  myMotor_right->setSpeed(200);
+  myMotor_left->setSpeed(200);
   // turn on motor
   myMotor_right->run(RELEASE);
   myMotor_left->run(RELEASE);
@@ -40,33 +41,37 @@ void loop() {
 
 
 // Move forward
-  if(analogRead(LS) && analogRead(RS)) {
-    myMotor_right->run(FORWARD);
+  if(digitalRead(LS) && digitalRead(RS)) {
+    myMotor_right->run(BACKWARD);
     myMotor_left->run(BACKWARD);
 
     // Check if this is the initial movement
-    if (!(analogRead(LLS)) && !(analogRead(RRS))) {
-      right_counter++;
+    if ((digitalRead(LLS)) != color_LLS) {
+      color_LLS = digitalRead(LLS);
+      change_counter_LLS ++;
       // Turn right at second intersection
-      if (right_counter == 2) {
+      if (change_counter_LLS == 3) {
         // Turn right using both wheels until right sensor reaches white line
-        while (analogRead(RS)) {
-          myMotor_right->run(BACKWARD);
+        myMotor_right->run(BACKWARD);
+        myMotor_left->run(BACKWARD);
+        delay(1000);
+        while (digitalRead(LS)) {
+          myMotor_right->run(FORWARD);
           myMotor_left->run(BACKWARD);
         }
       }
     }
   }
 
-// Turn left 
-  else if ((analogRead(LS)) && !(analogRead(RS))) {
-    myMotor_right->run(FORWARD);
-    myMotor_left->run(RELEASE);
-  }
-
 // Turn right
-  else if (!(analogRead(LS)) && (analogRead(RS))) {
+  else if ((digitalRead(LS)) && !(digitalRead(RS))) {
     myMotor_right->run(RELEASE);
     myMotor_left->run(BACKWARD);
+  }
+
+// Turn left
+  else if (!(digitalRead(LS)) && (digitalRead(RS))) {
+    myMotor_right->run(BACKWARD);
+    myMotor_left->run(RELEASE);
   }
 }

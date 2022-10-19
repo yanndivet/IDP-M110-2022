@@ -55,4 +55,10 @@ void move_backward(double distance = 0.0) {
 	myMotor_left->run(BACKWARD);
 	delay(distance);
 }
+
+void initial_movement() {
+	// Moves robot from white box to the correct direction on the line
+	move_forward(3000);
+	turn_right(3000);
+}
 #endif

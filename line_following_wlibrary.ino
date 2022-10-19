@@ -9,39 +9,30 @@ void setup() {
   Serial.begin(9600);           // set up Serial library at 9600 bps
   pin_setup();
   motor_setup();
+  Serial.println("Pins and motors are setup")
+  
+  initial_movement();
+  Serial.println("Robot at starting position, ready for line_following")
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 
-
 // Move forward
   if(digitalRead(LS) && digitalRead(RS)) {
     move_forward();
-
-    // Check if this is the initial movement
-    if ((digitalRead(LLS)) != color_LLS) {
-      color_LLS = digitalRead(LLS);
-      change_counter_LLS ++;
-      // Turn right at second intersection
-      if (change_counter_LLS == 3) {
-        // Turn right (hardcoded) to go over the white line with the left sensor
-        turn_right();
-        delay(1000);
-        while (digitalRead(LS)) { // turn right until right sensor reaches white line
-          turn_right();
-        }
-      }
+    Serial.println("Moved forward")
     }
-  }
 
 // Turn right
   else if ((digitalRead(LS)) && !(digitalRead(RS))) {
     turn_right();
+    Serial.println("Turned right")
   }
 
 // Turn left
   else if (!(digitalRead(LS)) && (digitalRead(RS))) {
     turn_left();
+    Serial.println("Turned left")
   }
 }

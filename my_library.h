@@ -27,6 +27,17 @@ void motor_setup() {
 	myMotor_left->run(RELEASE);
 }
 
+void ultrasound_setup() {
+// the chunk below is for ultrasonic sensor
+// Clears the trigPin condition
+	digitalWrite(trigPin, LOW);
+	delayMicroseconds(2);
+	// Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+	digitalWrite(trigPin, HIGH);
+	delayMicroseconds(10);
+	digitalWrite(trigPin, LOW);
+}
+
 void turn_left(double angle = 0.0) {
 	// argument is the duration during which the robot turns left
 	myMotor_right->run(FORWARD);
@@ -54,4 +65,7 @@ void move_backward(double distance = 0.0) {
 	myMotor_left->run(BACKWARD);
 	delay(distance);
 }
+
+double duration_to_distance_coef = 0.034 / 2;
+double anal_to_voltage_coef = (5.0 / 1023.0);
 #endif

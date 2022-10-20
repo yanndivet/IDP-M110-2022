@@ -65,6 +65,13 @@ void move_backward(double distance = 0.0) {
 	myMotor_left->run(BACKWARD);
 	delay(distance);
 }
+void stop(double distance = 0.0) {
+	// argument is the duration during which the robot moves backward
+	myMotor_right->run(RELEASE);
+	myMotor_left->run(RELEASE);
+	delay(distance);
+}
+
 
 double duration_to_distance_coef = 0.034 / 2;
 double anal_to_voltage_coef = (5.0 / 1023.0);

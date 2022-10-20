@@ -13,11 +13,11 @@ void block_drop(bool magnetic, int right_counter) {
     int counter_threshold;
 
     if (magnetic == true) {
-        counter_threshold = 4;
+        counter_threshold = 12;
     }
 
     else {
-        counter_threshold = 6;
+        counter_threshold = 16;
     }
 
     if (right_counter >= counter_threshold) {

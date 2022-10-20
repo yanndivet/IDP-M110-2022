@@ -13,10 +13,6 @@ bool hold_block = false;
 bool magnetic;
 double distance_thresh = 5.0;
 
-// below for ultrasonic sensor
-long duration; // variable for the duration of sound wave travel
-double distance; // variable for the distance measurement
-
 Servo myservo;
 
 void setup() {
@@ -44,7 +40,7 @@ void setup() {
 
 void loop() {
   // Put your main code here, to run repeatedly:
-
+// ---------------------------------- LINE FOLLOWING ----------------------------------
 // Move forward
   if((analogRead(LS) < threshold) && (analogRead(RS) < threshold)) {
     move_forward();
@@ -72,27 +68,23 @@ void loop() {
     turn_right();
   }
 
-  // for efficiency, maybe we can only start checking distance from ultrasensor after a certain amount of time? 
 
-  // the chunk below is for ultrasonic sensor
-  // Clears the trigPin condition
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
+// ---------------------------------- ULTRASOUND AND HALL-EFFECT SENSORS ----------------------------------
+  // for efficiency, maybe we can only start checking distance from ultrasensor after a certain amount of time? 
+  ultrasound_setup();
   // Reads the echoPin, returns the sound wave travel time in microseconds
   long duration = pulseIn(echoPin, HIGH);
   // Calculating the distance in centimeter
-  double distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  double distance = duration * duration_to_distance_coef; // Speed of sound wave divided by 2 (go and back)
 
 
   // read the value from hall effect sensor:
   int sensorValue = analogRead(HS);
   // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
-  double voltage = sensorValue * (5.0 / 1023.0);
+  double voltage = sensorValue * anal_to_voltage_coef;
 
+
+// ---------------------------------- BLOCK COLLECTION AND RETURN ----------------------------------
   if (distance < distance_thresh) {
     hold_block = true;
     myservo.write(180); // move servo by 180 degrees

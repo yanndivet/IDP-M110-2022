@@ -3,20 +3,15 @@
 #include <Arduino.h>
 #include <Adafruit_MotorShield.h>
 
-
 // Define all analog sensor ports used
 #define LS A2      // left sensor
 #define RS A1      // right sensor
 #define LLS A3      // most left sensor
 #define RRS A4      // most right sensor
-
-void pin_setup() {
-	// Define the ports used as inputs
-	pinMode(LS, INPUT);
-	pinMode(RS, INPUT);
-	pinMode(LLS, INPUT);
-	pinMode(RRS, INPUT);
-}
+#define HS A0      // hall sensor
+// below for ultrasonic sensor
+#define echoPin 2 // attach pin D2 
+#define trigPin 3 //attach pin D3
 
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
@@ -33,32 +28,30 @@ void motor_setup() {
 }
 
 void turn_left(double angle = 0.0) {
+	// argument is the duration during which the robot turns left
 	myMotor_right->run(FORWARD);
 	myMotor_left->run(RELEASE); 
 	delay(angle);
 }
 
 void turn_right(double angle = 0.0) {
+	// argument is the duration during which the robot turns right
 	myMotor_right->run(BACKWARD);
 	myMotor_left->run(BACKWARD);
 	delay(angle);
 }
 
 void move_forward(double distance = 0.0) {
+	// argument is the duration during which the robot moves forward
 	myMotor_right->run(BACKWARD);
 	myMotor_left->run(BACKWARD);
 	delay(distance);
 }
 
 void move_backward(double distance = 0.0) {
+	// argument is the duration during which the robot moves backward
 	myMotor_right->run(FORWARD);
 	myMotor_left->run(BACKWARD);
 	delay(distance);
-}
-
-void initial_movement() {
-	// Moves robot from white box to the correct direction on the line
-	move_forward(3000);
-	turn_right(3000);
 }
 #endif

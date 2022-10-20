@@ -9,12 +9,13 @@ int green = 12;
 
 int threshold = 100;
 int right_counter = 0;
-bool hold_block = false; // don't think this is necessary?
-bool magnetic = false;
+bool hold_block = false;
+bool magnetic;
+double distance_thresh = 5.0;
 
 // below for ultrasonic sensor
 long duration; // variable for the duration of sound wave travel
-int distance; // variable for the distance measurement
+double distance; // variable for the distance measurement
 
 Servo myservo;
 
@@ -71,6 +72,8 @@ void loop() {
     turn_right();
   }
 
+  // for efficiency, maybe we can only start checking distance from ultrasensor after a certain amount of time? 
+
   // the chunk below is for ultrasonic sensor
   // Clears the trigPin condition
   digitalWrite(trigPin, LOW);
@@ -80,27 +83,29 @@ void loop() {
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
   // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = pulseIn(echoPin, HIGH);
+  long duration = pulseIn(echoPin, HIGH);
   // Calculating the distance in centimeter
-  distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  double distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
 
 
   // read the value from hall effect sensor:
   int sensorValue = analogRead(HS);
   // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
-  float voltage = sensorValue * (5.0 / 1023.0);
+  double voltage = sensorValue * (5.0 / 1023.0);
 
-  if (distance < 5) {
+  if (distance < distance_thresh) {
     hold_block = true;
     myservo.write(180); // move servo by 180 degrees
-    if (voltage > 2.4) {
-      magnetic = true;
+    magnetic = magnetic_detection(voltage);
+    if (magnetic == true) {
       digitalWrite(red, HIGH);
     }
-
-    else if (voltage > 2.1) {
-      magnetic = false;
+    else {
       digitalWrite(green, HIGH);
     }
+  }
+
+  if (hold_block == true) {
+    block_drop(magnetic, right_counter);
   }
 }

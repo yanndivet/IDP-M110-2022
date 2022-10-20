@@ -3,8 +3,6 @@
 #include <Arduino.h>
 #include <my_library.h>
 
-int counter_threshold = 0;
-
 void initial_movement() {
 	move_forward();
 	turn_right();
@@ -12,6 +10,7 @@ void initial_movement() {
 
 void block_drop(bool magnetic, int right_counter) {
     // if block is magnetic, drop it in red region
+    int counter_threshold;
 
     if (magnetic == true) {
         counter_threshold = 4;
@@ -38,6 +37,23 @@ void block_drop(bool magnetic, int right_counter) {
     else {
         move_backward(200);
     }
+
+}
+
+bool magnetic_detection (double voltage, double upper_voltage_thresh = 2.4, double lower_voltage_thresh = 2.1) {
+    // Return whether block is magnetic or not
+    bool magnet_inside; 
+    if (voltage > upper_voltage_thresh) {
+        magnet_inside = true;
+    }
+    else if (voltage > lower_voltage_thresh) {
+        magnet_inside = false;
+    }
+    else {
+        Serial.println("Voltage is out of range");
+    }
+    return magnet_inside;
+    
 
 }
 #endif

@@ -53,7 +53,6 @@ bool magnetic_detection (double voltage, double upper_voltage_thresh = 2.4, doub
         Serial.println("Voltage is out of range");
     }
     return magnet_inside;
-    
-
 }
+
 #endif

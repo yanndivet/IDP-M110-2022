@@ -15,8 +15,8 @@
 
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor* myMotor_right = AFMS.getMotor(1);
-Adafruit_DCMotor* myMotor_left = AFMS.getMotor(3); // warning this motor is reversed
+Adafruit_DCMotor* myMotor_right = AFMS.getMotor(2);
+Adafruit_DCMotor* myMotor_left = AFMS.getMotor(1); // warning this motor is reversed
 
 void motor_setup() {
 	// Set the speed to start, from 0 (off) to 255 (max speed)
@@ -25,31 +25,35 @@ void motor_setup() {
 	// turn on motor but won't move
 	myMotor_right->run(RELEASE);
 	myMotor_left->run(RELEASE);
+	Serial.println("motor_setup");
 }
 
 void ultrasound_setup() {
-// the chunk below is for ultrasonic sensor
-// Clears the trigPin condition
+	// the chunk below is for ultrasonic sensor
+	// Clears the trigPin condition
 	digitalWrite(trigPin, LOW);
 	delayMicroseconds(2);
 	// Sets the trigPin HIGH (ACTIVE) for 10 microseconds
 	digitalWrite(trigPin, HIGH);
 	delayMicroseconds(10);
 	digitalWrite(trigPin, LOW);
+	Serial.println("ultrasound_setup");
 }
 
 void turn_left(double angle = 0.0) {
 	// argument is the duration during which the robot turns left
-	myMotor_right->run(FORWARD);
-	myMotor_left->run(RELEASE); 
+	myMotor_right->run(BACKWARD);
+	myMotor_left->run(FORWARD);
 	delay(angle);
+	Serial.println("turn_left inside fct");
 }
 
 void turn_right(double angle = 0.0) {
 	// argument is the duration during which the robot turns right
-	myMotor_right->run(BACKWARD);
+	myMotor_right->run(FORWARD);
 	myMotor_left->run(BACKWARD);
 	delay(angle);
+	Serial.println("turn_right inside fct");
 }
 
 void move_forward(double distance = 0.0) {
@@ -57,19 +61,22 @@ void move_forward(double distance = 0.0) {
 	myMotor_right->run(BACKWARD);
 	myMotor_left->run(BACKWARD);
 	delay(distance);
+	Serial.println("move_forward inside fct");
 }
 
 void move_backward(double distance = 0.0) {
 	// argument is the duration during which the robot moves backward
 	myMotor_right->run(FORWARD);
-	myMotor_left->run(BACKWARD);
+	myMotor_left->run(FORWARD);
 	delay(distance);
+	Serial.println("move_backward inside fct");
 }
 void stop(double distance = 0.0) {
 	// argument is the duration during which the robot moves backward
 	myMotor_right->run(RELEASE);
 	myMotor_left->run(RELEASE);
 	delay(distance);
+	Serial.println("stop inside fct");
 }
 
 

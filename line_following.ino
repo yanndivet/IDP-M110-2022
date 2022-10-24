@@ -8,8 +8,8 @@ Adafruit_DCMotor *myMotor_right = AFMS.getMotor(2);
 Adafruit_DCMotor *myMotor_left = AFMS.getMotor(1); // warning this motor is reversed
 
 int threshold = 100;
-int change_counter_LLS = 0;
-int color_LLS = 1;
+int change_counter_RRS = 0;
+int color_RRS = 1;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 void setup() {
   pinMode(LS, INPUT);
@@ -29,8 +29,8 @@ void setup() {
   Serial.println("Motor Shield found.");
 
   // Set the speed to start, from 0 (off) to 255 (max speed)
-  myMotor_right->setSpeed(200);
-  myMotor_left->setSpeed(200);
+  myMotor_right->setSpeed(255);
+  myMotor_left->setSpeed(255);
   // turn on motor
   myMotor_right->run(RELEASE);
   myMotor_left->run(RELEASE);
@@ -46,18 +46,23 @@ void loop() {
     myMotor_left->run(BACKWARD);
 
     // Check if this is the initial movement
-    if ((digitalRead(LLS)) != color_LLS) {
-      color_LLS = digitalRead(LLS);
-      change_counter_LLS ++;
+    if ((digitalRead(RRS)) != color_RRS) {
+      color_RRS = digitalRead(RRS);
+      change_counter_RRS ++;
+      Serial.println("Colour change");
+      Serial.println(change_counter_RRS);
       // Turn right at second intersection
-      if (change_counter_LLS == 3) {
+      if (change_counter_RRS == 3) {
         // Turn right using both wheels until right sensor reaches white line
+        Serial.println("3 Colour Changes Detected");
         myMotor_right->run(BACKWARD);
         myMotor_left->run(BACKWARD);
         delay(1000);
         while (digitalRead(LS)) {
+          Serial.println("Turn right");
           myMotor_right->run(FORWARD);
           myMotor_left->run(BACKWARD);
+          
         }
       }
     }

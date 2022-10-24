@@ -1,38 +1,41 @@
 #include <Adafruit_MotorShield.h>
-#include <setup_basicmovement.h>
-
-int threshold = 100;
-int change_counter_LLS = 0;
-int color_LLS = 1;
+#include <my_library.h>
+#include <movement_library.h>
 
 void setup() {
   Serial.begin(9600);           // set up Serial library at 9600 bps
-  pin_setup();
+
+	// Define the ports used as inputs
+	pinMode(LS, INPUT);
+	pinMode(RS, INPUT);
+	pinMode(LLS, INPUT);
+	pinMode(RRS, INPUT);
+
   motor_setup();
-  Serial.println("Pins and motors are setup")
-  
+
+  // Hardcode initial movement
   initial_movement();
-  Serial.println("Robot at starting position, ready for line_following")
+  Serial.println("setups done");
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  // Put your main code here, to run repeatedly:
+// ---------------------------------- LINE FOLLOWING ----------------------------------
 // Move forward
   if(digitalRead(LS) && digitalRead(RS)) {
-    move_forward();
-    Serial.println("Moved forward")
-    }
-
-// Turn right
-  else if ((digitalRead(LS)) && !(digitalRead(RS))) {
-    turn_right();
-    Serial.println("Turned right")
+     move_forward();
+     Serial.println("move forward");
   }
 
-// Turn left
-  else if (!(digitalRead(LS)) && (digitalRead(RS))) {
+// Turn left 
+  else if(!(digitalRead(LS)) && digitalRead(RS)) {
     turn_left();
-    Serial.println("Turned left")
+    Serial.println("turn left");
+  }
+
+// Turn right
+  else if(digitalRead(LS) && !(digitalRead(RS))) {
+    turn_right();
+    Serial.println("turn right");
   }
 }

@@ -4,8 +4,9 @@
 #include <my_library.h>
 
 void initial_movement() {
-	move_forward();
-	turn_right();
+    move_forward(1000);
+    turn_right(1000);
+    Serial.println("initial_movement");
 }
 
 void block_drop(bool magnetic, int right_counter) {
@@ -40,9 +41,9 @@ void block_drop(bool magnetic, int right_counter) {
 
 }
 
-bool magnetic_detection (double voltage, double upper_voltage_thresh = 2.4, double lower_voltage_thresh = 2.1) {
+bool magnetic_detection(double voltage, double upper_voltage_thresh = 2.4, double lower_voltage_thresh = 2.1) {
     // Return whether block is magnetic or not
-    bool magnet_inside; 
+    bool magnet_inside;
     if (voltage > upper_voltage_thresh) {
         magnet_inside = true;
     }

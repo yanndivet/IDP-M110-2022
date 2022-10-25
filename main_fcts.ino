@@ -78,6 +78,7 @@ void setup() {
 void loop() {
   // Put your main code here, to run repeatedly:
 
+// ---------------------- LINE FOLLOWING ----------------------
 
 // Move forward
   if(digitalRead(LS) && digitalRead(RS)) {
@@ -114,7 +115,8 @@ void loop() {
     left();
   }
 
-  // the chunk below is for ultrasonic sensor
+// ---------------------- ULTRASONIC AND HALL EFFECT SENSORS ----------------------
+
   // Clears the trigPin condition
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -129,10 +131,11 @@ void loop() {
   Serial.println(distance);
   Serial.println("cm");
 
-
   // Idea: read this value only once (inside loop when distance close enough)
   // read the value from hall effect sensor:
   int hall_sensor = digitalRead(HS);
+
+// ---------------------- BLOCK COLLECTION ----------------------
 
   if (distance < distance_threshold) {
     // add a grip function
@@ -161,7 +164,16 @@ void loop() {
     digitalWrite(red, LOW);
   }
 
+// ---------------------- BLOCK DROP ----------------------
+  block_drop(magnetic, change_counter_RRS);
 }
+
+
+
+
+
+
+
 
 // -------------------------------------------------------------------
 
@@ -214,10 +226,10 @@ void block_drop(bool magnetic, int right_counter) {
     int counter_turn;
 
     if (magnetic == true) {
-      counter_turn = 3;
+      counter_turn = 6;
     }
     else {
-      counter_turn = 5;
+      counter_turn = 8;
     }
 
     if (right_counter == counter_turn) {
@@ -228,6 +240,7 @@ void block_drop(bool magnetic, int right_counter) {
 
       // drop block
       myservo.write(-180);
+      hold_block = false;
 
       // Get outside square region and back on line
       backward(3000);

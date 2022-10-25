@@ -23,7 +23,13 @@ int color_RRS = 1;
 int motor_speed = 255;   // Set the speed to start, from 0 (off) to 255 (max speed)
 double duration_to_distance = 0.034 / 2;
 int distance_threshold = 6;
-int illuminate_time = 6000; 
+int illuminate_time = 6000;
+
+int mov_time;
+void forward(int mov_time = 0);
+void backward(int mov_time = 0);
+void left(int mov_time = 0);
+void right(int mov_time = 0);
 
 // LED lights
 int red = 5;
@@ -87,13 +93,14 @@ void loop() {
       if (change_counter_RRS == 3) {
         // Turn right using both wheels until right sensor reaches white line
         Serial.println("3 Colour Changes Detected");
-        forward();
-        delay(1000);
-        while (digitalRead(LS)) {
-          Serial.println("Turn right");
-          right();
-        }
+        forward(1000);
+        right_till_line();
       }
+    }
+    // To prevent the robot going straight for the wall at the end of the tunnel, 
+    // if the left-most sensor is white, then move back to left. 
+    if (!(digitalRead(LLS)) && (digitalRead(RRS))) {
+      left();
     }
   }
 
@@ -144,7 +151,7 @@ void loop() {
       digitalWrite(green, HIGH);
       
     }
-
+    // Collect block with grapper
     myservo.write(180);
   }
 
@@ -156,20 +163,76 @@ void loop() {
 
 }
 
+// -------------------------------------------------------------------
+
 // ---------------------- FUNCTIONS DEFINITIONS ----------------------
 
+// -------------------------------------------------------------------
+
+
+// ---------------------- FUNDAMENTAL MOVEMENTS ----------------------
 void wait() {
   myMotor_right->run(RELEASE);
   myMotor_left->run(RELEASE); }
 
-void forward () {
+void forward (int mov_time) {
   myMotor_right->run(BACKWARD);
-  myMotor_left->run(BACKWARD); }
+  myMotor_left->run(BACKWARD);
+  delay(mov_time); }
 
-void left() {
-  myMotor_right->run(BACKWARD);
-  myMotor_left->run(FORWARD); }
-
-void right() {
+void backward (int mov_time) {
   myMotor_right->run(FORWARD);
-  myMotor_left->run(BACKWARD); }
+  myMotor_left->run(FORWARD); 
+  delay(mov_time); }
+
+void left (int mov_time) {
+  myMotor_right->run(BACKWARD);
+  myMotor_left->run(FORWARD); 
+  delay(mov_time); }
+
+void right(int mov_time) {
+  myMotor_right->run(FORWARD);
+  myMotor_left->run(BACKWARD); 
+  delay(mov_time); }
+
+void left_till_line() {
+  while (digitalRead(RS)) {
+    left();
+  }
+}
+
+void right_till_line() {
+  while (digitalRead(LS)) {
+    right();
+  }
+}
+
+
+// ---------------------- MORE SOPHISTICATED MOVEMENTS ----------------------
+void block_drop(bool magnetic, int right_counter) {
+    // if block is magnetic, drop it in red region
+    int counter_turn;
+
+    if (magnetic == true) {
+      counter_turn = 3;
+    }
+    else {
+      counter_turn = 5;
+    }
+
+    if (right_counter == counter_turn) {
+      // Get inside square region
+      right(1000);
+      right_till_line();
+      forward(3000);
+
+      // drop block
+      myservo.write(-180);
+
+      // Get outside square region and back on line
+      backward(3000);
+      left(1000);
+      right_till_line();
+    }
+}
+

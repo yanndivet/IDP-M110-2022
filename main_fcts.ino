@@ -24,6 +24,8 @@ int motor_speed = 255;   // Set the speed to start, from 0 (off) to 255 (max spe
 double duration_to_distance = 0.034 / 2;
 int distance_threshold = 6;
 int illuminate_time = 6000;
+int angle_forward = -180;
+int angle_backward = 110;
 
 int mov_time;
 void forward(int mov_time = 0);
@@ -155,7 +157,7 @@ void loop() {
       
     }
     // Collect block with grapper
-    myservo.write(180);
+    myservo.write(angle_forward);
   }
 
   else {
@@ -227,10 +229,10 @@ void block_drop(bool magnetic, int right_counter) {
     int counter_turn;
 
     if (magnetic == true) {
-      counter_turn = 6;
+      counter_turn = 11;
     }
     else {
-      counter_turn = 8;
+      counter_turn = 15;
     }
 
     if (right_counter == counter_turn) {
@@ -240,7 +242,7 @@ void block_drop(bool magnetic, int right_counter) {
       forward(3000);
 
       // drop block
-      myservo.write(-180);
+      myservo.write(angle_backward);
       hold_block = false;
 
       // Get outside square region and back on line
@@ -251,7 +253,7 @@ void block_drop(bool magnetic, int right_counter) {
 }
 
 void return_robot(int current_counter) {
-  int return_counter = 7;
+  int return_counter = 13;
 
   if (current_counter == return_counter) {
     // Get inside square region

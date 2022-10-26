@@ -164,8 +164,9 @@ void loop() {
     digitalWrite(red, LOW);
   }
 
-// ---------------------- BLOCK DROP ----------------------
-  block_drop(magnetic, change_counter_RRS);
+// ---------------------- BLOCK DROP & RETURN ----------------------
+  // block_drop(magnetic, change_counter_RRS);
+  return_robot(change_counter_RRS);
 }
 
 
@@ -247,5 +248,16 @@ void block_drop(bool magnetic, int right_counter) {
       left(1000);
       right_till_line();
     }
+}
+
+void return_robot(int current_counter) {
+  int return_counter = 7;
+
+  if (current_counter == return_counter) {
+    // Get inside square region
+    right(1000);
+    right_till_line();
+    forward(3000);
+  }
 }
 

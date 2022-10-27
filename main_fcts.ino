@@ -1,6 +1,6 @@
 #include <Adafruit_MotorShield.h>
-#include <Servo.h>;
-#include <Adafruit_MotorShield.h>
+#include <Servo.h>
+// #include <ctime>
 
 // Define all pins
 #define HS 0      // hall sensor
@@ -26,8 +26,12 @@ int distance_threshold = 6;
 int illuminate_time = 6000;
 int angle_forward = -180;
 int angle_backward = 110;
+double hall_threshold = 0.8;
+double voltage_conversion = 5.0 / 1023.0;
+int return_time = 3000;
 
 int mov_time;
+void wait(int mov_time = 0);
 void forward(int mov_time = 0);
 void backward(int mov_time = 0);
 void left(int mov_time = 0);
@@ -93,7 +97,7 @@ void loop() {
       Serial.println("Colour change");
       Serial.println(change_counter_RRS);
       // Turn right at second intersection
-      if (change_counter_RRS == 3) {
+      if ((change_counter_RRS == 3) && !(hold_block)) {
         // Turn right using both wheels until right sensor reaches white line
         Serial.println("3 Colour Changes Detected");
         forward(1000);
@@ -110,6 +114,10 @@ void loop() {
 // Turn right
   else if ((digitalRead(LS)) && !(digitalRead(RS))) {
     right();
+    if (!(digitalRead(RRS)) && !(hold_block)) { // only go forward if he doesn't have the block and there's an intersection
+      forward();
+    // should also turn right when arriving at intersections
+    }
   }
 
 // Turn left
@@ -133,17 +141,18 @@ void loop() {
   Serial.println(distance);
   Serial.println("cm");
 
-  // Idea: read this value only once (inside loop when distance close enough)
-  // read the value from hall effect sensor:
-  int hall_sensor = digitalRead(HS);
-
 // ---------------------- BLOCK COLLECTION ----------------------
 
-  if (distance < distance_threshold) {
+  if ((distance < distance_threshold) && !(hold_block)) {
     // add a grip function
     wait();
+    int hall_sensor = analogRead(HS);
+    // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+    float voltage = hall_sensor * voltage_conversion;
+    Serial.println(voltage);
     hold_block = true;
-    if (!(hall_sensor)){
+    int change_counter_RRS = 0; // re-initialise once block is picked up
+    if (hall_sensor > hall_threshold){
       magnetic = true;
       delay(illuminate_time);
       digitalWrite(red, HIGH);
@@ -168,7 +177,6 @@ void loop() {
 
 // ---------------------- BLOCK DROP & RETURN ----------------------
   // block_drop(magnetic, change_counter_RRS);
-  return_robot(change_counter_RRS);
 }
 
 
@@ -186,9 +194,10 @@ void loop() {
 
 
 // ---------------------- FUNDAMENTAL MOVEMENTS ----------------------
-void wait() {
+void wait(int mov_time) {
   myMotor_right->run(RELEASE);
-  myMotor_left->run(RELEASE); }
+  myMotor_left->run(RELEASE); 
+  delay(mov_time); }
 
 void forward (int mov_time) {
   myMotor_right->run(BACKWARD);
@@ -229,37 +238,24 @@ void block_drop(bool magnetic, int right_counter) {
     int counter_turn;
 
     if (magnetic == true) {
-      counter_turn = 11;
+      counter_turn = 1;
     }
     else {
-      counter_turn = 15;
+      counter_turn = 5;
     }
 
     if (right_counter == counter_turn) {
       // Get inside square region
-      right(1000);
-      right_till_line();
-      forward(3000);
+      right(900);
+      forward(2000);
 
       // drop block
       myservo.write(angle_backward);
       hold_block = false;
 
-      // Get outside square region and back on line
-      backward(3000);
-      left(1000);
-      right_till_line();
+      // get out of function, we don't want this repeating
+      right_counter ++;
+
     }
-}
-
-void return_robot(int current_counter) {
-  int return_counter = 13;
-
-  if (current_counter == return_counter) {
-    // Get inside square region
-    right(1000);
-    right_till_line();
-    forward(3000);
-  }
 }
 

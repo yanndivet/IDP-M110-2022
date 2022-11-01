@@ -289,7 +289,7 @@ void block_drop(bool magnetic, int change_counter_RRS) {
       }
     }
     else {
-      if (counter_turn = 5){
+      if (counter_turn == 5){
       // Get inside square region
         right();
         delay(1000);

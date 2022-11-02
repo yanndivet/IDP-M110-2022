@@ -5,7 +5,6 @@
 #define HS A0      // hall sensor
 #define LS 2      // left sensor
 #define RS 1      // right sensor
-#define RRS 3     // most right sensor
 #define echoPin 5
 #define trigPin 6
 #define echoPin2 8
@@ -28,8 +27,7 @@ Adafruit_DCMotor *myMotor_left = AFMS.getMotor(1); // warning this motor is reve
 
 // Define variables
 int threshold = 100;
-int change_counter_RRS = 0;
-int color_RRS = 1;
+
 int motor_speed = 255;   // Set the speed to start, from 0 (off) to 255 (max speed)
 double duration_to_distance = 0.034 / 2;
 int distance_threshold = 5;
@@ -56,7 +54,6 @@ void setup() {
   // Define the ports used as inputs
   pinMode(LS, INPUT);
   pinMode(RS, INPUT);
-  pinMode(RRS, INPUT);
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
   pinMode(trigPin2, OUTPUT); // Sets the trigPin as an OUTPUT
@@ -96,6 +93,7 @@ void loop() {
 
   else{
     start = true;
+    button_counter ++;
   }
 
   if (start == true){
@@ -103,7 +101,7 @@ void loop() {
 
     if (button_counter == 1){
       forward();
-      delay(4000);
+      delay(3700);
     }
   // Move forward
     if(digitalRead(LS) && digitalRead(RS)) {
@@ -132,7 +130,7 @@ void loop() {
     
 
   // Turn right
-    else if ((digitalRead(LS)) && !(digitalRead(RS)) && (change_counter_RRS > 0)) {
+    else if ((digitalRead(LS)) && !(digitalRead(RS))) {
 
       right();
     }
@@ -179,7 +177,7 @@ void loop() {
       Serial.println(voltage);
 
       if ((hall_sensor) > hall_threshold){
-        magnetic = true;
+        magnetic = false;
         digitalWrite(red, HIGH);
         delay(illuminate_time);
         digitalWrite(red, LOW);
@@ -221,7 +219,7 @@ void loop() {
 
     if ((tunnel_distance < 10) && nudge){
       left();
-      delay(60);
+      delay(80);
       forward();
       nudge = false;
       tunnel_entry = millis();
@@ -230,14 +228,11 @@ void loop() {
 
     if (!(nudge)){
       int current_time = millis();
-      if ((current_time - tunnel_entry) > 5000){
-        if ((digitalRead(RRS)) != color_RRS) {
-          color_RRS = digitalRead(RRS);
-          change_counter_RRS ++;
-          Serial.println("Colour change");
-          Serial.println(change_counter_RRS);
-          block_drop(magnetic, change_counter_RRS);
-        }
+      if ((current_time - tunnel_entry) > 10000){
+        
+
+        block_drop(magnetic);
+        
       }
 
     }
@@ -272,59 +267,51 @@ void backward() {
 
 
 // ---------------------- MORE SOPHISTICATED MOVEMENTS ----------------------
-void block_drop(bool magnetic, int change_counter_RRS) {
+void block_drop(bool magnetic) {
     // if block is magnetic, drop it in red region
     // these counter values have to be adjusted experimentally.
-    if (magnetic == true) {
-      if (change_counter_RRS == 6){
-      // Get inside square region
-        right();
-        delay(1000);
-        forward();
-        delay(1300);
 
-        // drop block
-        myservo.write(-180);
-        hold_block = false;
+  left();
+  delay(1020);
+  if (magnetic == true) {
+    
+    // Get inside square region
+    forward();
+    delay(9000);
 
-        // Get outside square region and back on line
-        backward();
-        delay(300);
-        right();
-        delay(900);
-        forward();
-        delay(3500);
-        wait();
-        start = false;
-        digitalWrite(flash, LOW);
-        delay(100000);
-      }
-    }
-    else {
-      if (change_counter_RRS == 1){
-      // Get inside square region
-        right();
-        delay(1000);
-        forward();
-        delay(1200);
+    // drop block
+    myservo.write(-180);
+    hold_block = false;
 
-        // drop block
-        myservo.write(-180);
-        hold_block = false;
+    // Get outside square region and back on line
+    backward();
+    delay(3500);
+    wait();
+    delay(1000);
+    start = false;
+    digitalWrite(flash, LOW);
+    delay(100000);
+    
+  }
 
-        // Get outside square region and back on line
-        backward();
-        delay(300);
-        left();
-        delay(900);
-        forward();
-        delay(3000);
-        wait();
-        start = false;
-        digitalWrite(flash, LOW);
-        delay(100000);
-      }
-    }
+  else {
+    
+    // Get inside square region
+
+    forward();
+    delay(5500);
+
+    // drop block
+    myservo.write(-180);
+    hold_block = false;
+
+    // Get outside square region and back on line
+    wait();
+    start = false;
+    digitalWrite(flash, LOW);
+    delay(100000);
+  }
+  
 }
 
 

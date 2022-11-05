@@ -6,6 +6,8 @@ starting the drop off areas and the collection area which can be avoided by usin
 a block is transported back across the obstacle a new block will be randomly placed in the collection area
 
 
+
+
 Standard Specification:
 
 • The robot must not have any sharp edges and must be safe around humans.
@@ -42,6 +44,9 @@ another engineer to replicate the robot, or carry out repairs
 The only interaction permitted is between the robot and a workstation. No information may be entered at the
 terminal during a run, except for a single instruction for the robot to return. The same program must be run
 after each restart.
+
+
+
 
 
 Task Specific Specification:

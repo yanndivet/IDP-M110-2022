@@ -1,6 +1,6 @@
 # IDP-M110-2022
 
-#### This repository was written by Yann Divet and Katsutaka Suzuki, both in the software team of team M110 for the IDP project. A short description of the project is given below. The final code can be found in the file "main_navigation.ino"
+#### This repository was written by Yann Divet and Katsutaka Suzuki, both in the software team of team M110 for the IDP project. A short description of the project is given below. The final code can be found in the file "main_navigation.ino".
 
 The ultimate objective is to find blocks and determine if they are magnetic and deliver to the correct area based on
 whether they are magnetic or not. The area contains white lines for guidance. An obstacle is situated between the

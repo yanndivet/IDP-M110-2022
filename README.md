@@ -1,6 +1,6 @@
 # IDP-M110-2022
 
-The ultimate objective is to find blocks and determine if they are magnetic and deliver to the correct area based on
+    The ultimate objective is to find blocks and determine if they are magnetic and deliver to the correct area based on
 whether they are magnetic or not. The area contains white lines for guidance. An obstacle is situated between the
 starting the drop off areas and the collection area which can be avoided by using either a ramp or tunnel. Each time
 a block is transported back across the obstacle a new block will be randomly placed in the collection area
@@ -8,7 +8,7 @@ a block is transported back across the obstacle a new block will be randomly pla
 
 
 
-Standard Specification:
+    Standard Specification:
 
 • The robot must not have any sharp edges and must be safe around humans.
 
@@ -45,11 +45,7 @@ The only interaction permitted is between the robot and a workstation. No inform
 terminal during a run, except for a single instruction for the robot to return. The same program must be run
 after each restart.
 
-
-
-
-
-Task Specific Specification:
+    Task Specific Specification:
 
 • Blocks should be clearly identified before they are transported. This should be indicated by illuminating a red
 LED for magnetic blocks and a green LED for non magnetic blocks. The LED should clearly illuminate for > 5

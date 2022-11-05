@@ -62,5 +62,7 @@ the green drop off square.
 
 • The robot may traverse between the two sides of the table by either the ramp or tunnel
 
-• Blocks will be scored for delivery at the end of the t
+• Blocks will be scored for delivery at the end of the task.
+
+• Only a single block may be transported at a time.
 
